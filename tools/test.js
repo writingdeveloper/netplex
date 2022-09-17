@@ -180,7 +180,7 @@ async function main() {
       console.log(files);
       for (let i = 0; i < files.length; i++) {
         for (let j = 0; j < setSeries.length; j++) {
-          if (files[i].includes(setSeries[j].seriseName)) {
+          if (files[i].startsWith(setSeries[j].seriseName)) {
             fs.rename(
               files[i],
               destinationFolder +
@@ -195,7 +195,7 @@ async function main() {
             );
             break;
           } else if (
-            setSeries[j].additionalName.includes(
+            setSeries[j].additionalName.startsWith(
               files[i].split("/").pop().split(".")[0]
             )
           ) {
