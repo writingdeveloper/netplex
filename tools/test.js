@@ -1,8 +1,6 @@
-import glob from "glob";
-import chalk from "chalk";
-import fs from "fs";
-
-import setSeries from "./series.json" assert { type: "json" };
+const glob = require("glob");
+const fs = require("fs");
+const setSeries = require("./series.json");
 
 async function main() {
   for (let a = 0; a < setSeries.length; a++) {
@@ -28,7 +26,7 @@ async function main() {
         }
       }
     }
-    console.log(chalk.green(`${setSeries[a].settings.type} 폴더 생성 완료`));
+    console.log(`${setSeries[a].settings.type} 폴더 생성 완료`);
     for (let d = 0; d < setSeries[a].settings.rootFolder.length; d++) {
       let searchDir = `${setSeries[a].settings.rootFolder[d]}/**/*(${setSeries[
         a
