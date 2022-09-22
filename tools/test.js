@@ -1,70 +1,98 @@
-const glob = require("glob");
-const fs = require("fs");
-const setSeries = require("./series.json");
+import glob from "glob";
+import chalk from "chalk";
+import fs from "fs";
 
-const rootFolder = ["/mnt/c/Users/super/Documents/GitHub/netplex/dir", ""]; // 최상위 경로
-// const trashFolder = "/mnt/c/Users/super/Documents/GitHub/netplex/trash"; // 휴지통 경로
-const destinationFolder =
-  "/mnt/c/Users/super/Documents/GitHub/netplex/destination"; // 이동할 경로
-
-/* setFolder 에 설정된 폴더 생성*/
-setSeries.forEach((folder) => {
-  if (!fs.existsSync(destinationFolder + "/" + folder.seriseName)) {
-    fs.mkdirSync(destinationFolder + "/" + folder.seriseName);
-  }
-});
-
-let selectExtention = ["mp4", "mkv", "avi"]; // 확장자 설정
-// 경로를 `/mnt/c/Users/super/Documents/GitHub/netplex/dir/**/*(*.mp4|*.mkv)` 와 같은 형식으로 설정 완료
-selectExtention = selectExtention.map((ext) => `*.${ext}`).join("|");
+import setSeries from "./series.json" assert { type: "json" };
 
 async function main() {
-  for (let k = 0; k < rootFolder.length; k++) {
-    const searchDir = `${rootFolder[k]}/**/*(${selectExtention})`;
-    await glob(searchDir, (err, files) => {
-      if (err) {
-        console.log("Error", err);
-      } else {
-        console.log(files);
-        for (let i = 0; i < files.length; i++) {
-          for (let j = 0; j < setSeries.length; j++) {
-            if (files[i].startsWith(setSeries[j].seriseName)) {
-              fs.rename(
-                files[i],
-                destinationFolder +
-                  "/" +
-                  setSeries[j].seriseName +
-                  "/" +
-                  files[i].split("/").pop(),
-                (err) => {
-                  if (err) throw err;
-                  console.log(`일치 파일 처리 완료 : ${files[i]}`);
+  for (let a = 0; a < setSeries.length; a++) {
+    console.log(`${setSeries[a].settings.type} 처리중...`);
+    if (!fs.existsSync(setSeries[a].settings.destinationFolder)) {
+      fs.mkdirSync(setSeries[a].settings.destinationFolder);
+    }
+    for (let b = 0; b < setSeries[a].data.length; b++) {
+      console.log(`${setSeries[a].data[b].seriseName} 폴더 생성중...`);
+      for (let c = 0; c < setSeries[a].data.length; c++) {
+        if (
+          !fs.existsSync(
+            setSeries[a].settings.destinationFolder +
+              "/" +
+              setSeries[a].data[b].seriseName
+          )
+        ) {
+          fs.mkdirSync(
+            setSeries[a].settings.destinationFolder +
+              "/" +
+              setSeries[a].data[b].seriseName
+          );
+        }
+      }
+    }
+    console.log(chalk.green(`${setSeries[a].settings.type} 폴더 생성 완료`));
+    for (let d = 0; d < setSeries[a].settings.rootFolder.length; d++) {
+      let searchDir = `${setSeries[a].settings.rootFolder[d]}/**/*(${setSeries[
+        a
+      ].settings.fileTypes
+        .map((ext) => `*.${ext}`)
+        .join("|")})`;
+      console.log(searchDir);
+      await glob(searchDir, async (err, files) => {
+        if (err) {
+          console.log(err);
+        } else {
+          for (let e = 0; e < files.length; e++) {
+            for (let f = 0; f < setSeries[a].data.length; f++) {
+              if (
+                files[e]
+                  .split("/")
+                  .pop()
+                  .includes(setSeries[a].data[f].seriseName)
+              ) {
+                fs.rename(
+                  files[e],
+                  setSeries[a].settings.destinationFolder +
+                    "/" +
+                    setSeries[a].data[f].seriseName +
+                    "/" +
+                    files[e].split("/").pop(),
+                  (err) => {
+                    if (err) throw err;
+                    console.log(`일치 파일 처리 완료 : ${files[e]}`);
+                  }
+                );
+                break;
+              }
+              for (
+                let g = 0;
+                g < setSeries[a].data[f].additionalName.length;
+                g++
+              ) {
+                if (
+                  files[e]
+                    .split("/")
+                    .pop()
+                    .includes(setSeries[a].data[f].additionalName[g])
+                ) {
+                  fs.rename(
+                    files[e],
+                    setSeries[a].settings.destinationFolder +
+                      "/" +
+                      setSeries[a].data[f].seriseName +
+                      "/" +
+                      files[e].split("/").pop(),
+                    (err) => {
+                      if (err) throw err;
+                      console.log(`예외 일치 파일 처리 완료 : ${files[e]}`);
+                    }
+                  );
+                  break;
                 }
-              );
-              break;
-            } else if (
-              setSeries[j].additionalName.startsWith(
-                files[i].split("/").pop().split(".")[0]
-              )
-            ) {
-              fs.rename(
-                files[i],
-                destinationFolder +
-                  "/" +
-                  setSeries[j].seriseName +
-                  "/" +
-                  files[i].split("/").pop(),
-                (err) => {
-                  if (err) throw err;
-                  console.log(`예외 파일 처리 완료 : ${files[i]}`);
-                }
-              );
-              break;
+              }
             }
           }
         }
-      }
-    });
+      });
+    }
   }
 }
 
