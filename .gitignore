@@ -103,7 +103,9 @@ dist
 # TernJS port file
 .tern-port
 
-dir/
+dir1/
+dir2/
+test/
 dirBackup/
 destination/
 trash/
