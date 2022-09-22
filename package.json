@@ -2,6 +2,5 @@
   "dependencies": {
     "chalk": "^5.0.1",
     "glob": "^8.0.3"
-  },
-  "type": "module"
+  }
 }
