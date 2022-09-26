@@ -11,8 +11,9 @@
     },
     "data": [
       {
-        "seriseName": "1박 2일 시즌4",
-        "additionalName": ["1박 2일", "1박2일", "1박-2일"]
+        "seriseName": "1박 2일",
+        "additionalName": ["1박 2일", "1박2일", "1박-2일"],
+        "seasonFolder": "Season 04"
       },
       {
         "seriseName": "걸어서 세계속으로",
@@ -132,7 +133,8 @@
       },
       {
         "seriseName": "동상이몽 2 - 너는 내 운명",
-        "additionalName": ["동상이몽 2 - 너는 내 운명"]
+        "additionalName": ["동상이몽 2 - 너는 내 운명"],
+        "seasonFolder": "Season 02"
       },
       {
         "seriseName": "신비한 TV 서프라이즈",
@@ -140,7 +142,8 @@
       },
       {
         "seriseName": "아는 형님",
-        "additionalName": ["아는 형님", "아는형님"]
+        "additionalName": ["아는 형님", "아는형님"],
+        "seasonFolder": "Season 01"
       },
       {
         "seriseName": "옥탑방의 문제아들",
@@ -168,12 +171,12 @@
     },
     "data": [
       {
-        "seriseName": "워킹데드",
-        "additionalName": ["워킹 데드", "워킹데에드"]
+        "seriseName": "워킹 데드",
+        "additionalName": ["워킹 데드", "워킹데드", "워킹데에드"]
       },
       {
         "seriseName": "응답하라 1988",
-        "additionalName": ["응답하라1988"]
+        "additionalName": ["응답하라 1988"]
       }
     ]
   }
