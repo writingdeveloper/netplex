@@ -23,10 +23,23 @@ async function main() {
               "/" +
               setSeries[a].data[b].seriseName
           );
+          console.log(`${setSeries[a].settings.type} 폴더 생성 완료`);
+        }
+        if (setSeries[a].data.hasOwnProperty("seasonFolder")) {
+          fs.mkdirSync(
+            setSeries[a].settings.destinationFolder +
+              "/" +
+              setSeries[a].data[b].seriseName +
+              "/" +
+              setSeries[a].data[b].seasonFolder
+          );
+          console.log(
+            `${setSeries[a].data[b].seasonFolder} 시즌 폴더 생성 완료`
+          );
         }
       }
     }
-    console.log(`${setSeries[a].settings.type} 폴더 생성 완료`);
+
     for (let d = 0; d < setSeries[a].settings.rootFolder.length; d++) {
       let searchDir = `${setSeries[a].settings.rootFolder[d]}/**/*(${setSeries[
         a
@@ -44,7 +57,8 @@ async function main() {
                 files[e]
                   .split("/")
                   .pop()
-                  .includes(setSeries[a].data[f].seriseName)
+                  .includes(setSeries[a].data[f].seriseName) &&
+                !setSeries[a].data.seasonFolder
               ) {
                 fs.rename(
                   files[e],
@@ -56,6 +70,30 @@ async function main() {
                   (err) => {
                     if (err) throw err;
                     console.log(`일치 파일 처리 완료 : ${files[e]}`);
+                  }
+                );
+                break;
+              } else if (
+                files[e]
+                  .split("/")
+                  .pop()
+                  .includes(setSeries[a].data[f].seriseName) &&
+                setSeries[a].data.hasOwnProperty("seasonFolder")
+              ) {
+                fs.rename(
+                  files[e],
+                  setSeries[a].settings.destinationFolder +
+                    "/" +
+                    setSeries[a].data[f].seriseName +
+                    "/" +
+                    setSeries[a].data[f].seasonFolder +
+                    "/" +
+                    files[e].split("/").pop(),
+                  (err) => {
+                    if (err) throw err;
+                    console.log(
+                      `일치 파일 시즌 폴더로 처리 완료 : ${files[e]}`
+                    );
                   }
                 );
                 break;
@@ -81,6 +119,30 @@ async function main() {
                     (err) => {
                       if (err) throw err;
                       console.log(`예외 일치 파일 처리 완료 : ${files[e]}`);
+                    }
+                  );
+                  break;
+                } else if (
+                  files[e]
+                    .split("/")
+                    .pop()
+                    .includes(setSeries[a].data[f].additionalName[g]) &&
+                  setSeries[a].data.hasOwnProperty("seasonFolder")
+                ) {
+                  fs.rename(
+                    files[e],
+                    setSeries[a].settings.destinationFolder +
+                      "/" +
+                      setSeries[a].data[f].seriseName +
+                      "/" +
+                      setSeries[a].data[f].seasonFolder +
+                      "/" +
+                      files[e].split("/").pop(),
+                    (err) => {
+                      if (err) throw err;
+                      console.log(
+                        `예외 일치 파일 시즌 폴더로 처리 완료 : ${files[e]}`
+                      );
                     }
                   );
                   break;
